@@ -1,0 +1,30 @@
+core: 8.x
+type: theme
+base theme: bootstrap
+
+name: 'Base Drupal 8 Theme'
+description: 'Base Drupal 8 theme'
+package: 'Bootstrap'
+
+libraries:
+  - theme/global-css
+  - theme/global-js
+
+stylesheets-remove:
+  - core/assets/vendor/normalize-css/normalize.css
+  - core/modules/system/css/system.module.css
+  - core/modules/system/css/system.theme.css
+  - core/modules/views/css/views.module.css
+
+regions:
+  navigation: 'Navigation'
+  navigation_collapsible: 'Navigation (Collapsible)'
+  header: 'Top Bar'
+  highlighted: 'Highlighted'
+  help: 'Help'
+  content: 'Content'
+  sidebar_first: 'Primary'
+  sidebar_second: 'Secondary'
+  footer: 'Footer'
+  page_top: 'Page top'
+  page_bottom: 'Page bottom'

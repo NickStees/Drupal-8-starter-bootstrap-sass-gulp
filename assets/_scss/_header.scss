@@ -1,0 +1,20 @@
+#navbar{
+  background-color: $brand-color-primary;
+  border-bottom: $border-default-size $brand-color-white solid;
+  height: 100px;
+  color: $brand-color-white;
+  z-index: 100;
+  button,
+  a{
+    color: $brand-color-white;
+  }
+  .navbar-collapse{
+    background-color: $brand-color-primary;
+    z-index: 999;
+    border-bottom: $border-default-size $brand-color-white solid;
+    box-shadow: none;
+    @include size(mdu) {
+      border: none;
+    }
+  }
+}

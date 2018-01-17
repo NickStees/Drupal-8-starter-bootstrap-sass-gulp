@@ -1,0 +1,8 @@
+global-css:
+  css:
+    theme:
+      assets/css/main.css: {}
+
+global-js:
+  js:
+    assets/js/bundle.js: {}
