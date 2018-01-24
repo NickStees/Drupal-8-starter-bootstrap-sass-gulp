@@ -6,3 +6,14 @@ global-css:
 global-js:
   js:
     assets/js/bundle.js: {}
+  dependencies:
+    - core/jquery
+
+front-page:
+  css:
+    theme:
+      assets/css/front.min.css: {}
+  js:
+    assets/js/front.min.js: {}
+  dependencies:
+    - core/jquery

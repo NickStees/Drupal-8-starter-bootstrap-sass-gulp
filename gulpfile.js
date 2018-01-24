@@ -33,6 +33,7 @@ var jsSources = [
 ];
 
 
+
 // ########### Tasks ############
 /**
  * Build the Jekyll Site
@@ -53,7 +54,7 @@ gulp.task('jekyll-rebuild', ['jekyll-build'], function () {
 /**
  * Wait for jekyll-build, then launch the Server
  */
-gulp.task('browser-sync', ['jekyll-build', 'sass', 'bundle-js'], function() {
+gulp.task('browser-sync', ['jekyll-build', 'sass', 'bundle-js', 'sass-front', 'bundle-js-front'], function() {
     browserSync.init({
         server: {
             baseDir: '_site'
@@ -86,14 +87,29 @@ gulp.task('sass', function () {
 });
 
 /**
- * Watch scss files for changes & recompile
- * Watch html/md files, run jekyll & reload BrowserSync
+ * FRONT PAGE ONLY - Compile files from _scss into both _site/css (for live injecting) and site (for future jekyll builds). Also create minified versions for production use.
  */
-gulp.task('watch', function () {
-  gulp.watch('assets/_scss/*.scss', ['sass']);
-  gulp.watch(jsSources, ['bundle-js']);
-  gulp.watch(['*.html', '_layouts/*.html', '_includes/*.html', '_posts/*'], ['jekyll-rebuild']);
+gulp.task('sass-front', function () {
+    browserSync.notify(messages.syncStarted);
+    return gulp.src('assets/_scss/front.scss')
+        .pipe(sass({
+            includePaths: ['scss'],
+            onError: browserSync.notify
+        }))
+        .pipe(postcss([mqpacker]))
+        .pipe(prefix(['last 15 versions', '> 1%', 'ie 8', 'ie 7'], { cascade: true }))
+        .pipe(gulp.dest('_site/assets/css'))
+        .pipe(gulp.dest('assets/css'))
+        .pipe(cleanCSS({
+            compatibility: 'ie9',
+            processImportFrom: ['!fonts.googleapis.com']
+        }))
+        .pipe(rename({ extname: '.min.css' }))
+        .pipe(gulp.dest('_site/assets/css'))
+        .pipe(gulp.dest('assets/css'))
+        .pipe(browserSync.stream());
 });
+
 
 /**
  * Copy assets to Drupal Theme Directory. Copies images, css and js
@@ -124,9 +140,39 @@ gulp.task('bundle-js', function() {
     .pipe(browserSync.stream());
 });
 
+/**
+ * FRONT PAGE ONLY - Bundle js files together and then created minified versions and publish them to the correct locations.
+ */
+gulp.task('bundle-js-front', function () {
+    browserSync.notify(messages.syncStartedjs);
+    return gulp.src('assets/js/front.js')
+        .pipe(gulp.dest('assets/js'))
+        .pipe(gulp.dest('_site/assets/js'))
+        .pipe(uglify())
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(gulp.dest('assets/js'))
+        .pipe(gulp.dest('_site/assets/js'))
+        .pipe(browserSync.stream());
+});
+
+/**
+ * Watch scss files for changes & recompile
+ * Watch html/md files, run jekyll & reload BrowserSync
+ */
+gulp.task('watch', function () {
+    gulp.watch('assets/_scss/*.scss', ['sass', 'sass-front']);
+    gulp.watch(jsSources, ['bundle-js']);
+    gulp.watch(['assets/js/front.js'], ['bundle-js-front']);
+    gulp.watch(['*.html', '_layouts/*.html', '_includes/*.html', '_posts/*'], ['jekyll-rebuild']);
+});
 
 /**
  * Default task, running just `gulp` will compile the sass,
  * compile the jekyll site, launch BrowserSync & watch files.
  */
 gulp.task('default', ['browser-sync', 'watch']);
+
+/**
+ * Simple build task to only generate css/js files
+ */
+gulp.task('build', ['sass', 'sass-front' ,'bundle-js' ,'bundle-js-front']);

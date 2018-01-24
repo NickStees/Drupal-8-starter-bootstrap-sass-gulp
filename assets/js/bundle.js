@@ -42,41 +42,30 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
 // Place any jQuery/helper plugins in here.
 
-(function($) {
+/**
+ * @file
+ * Javascript for all pages on site
+ */
 
-$(document).ready(function() {
+(function ($, Drupal, drupalSettings) {
 
-  // if (Modernizr.video && !jQuery.browser.mobile) {
-  //   var $vidHtml = '';
-  //     $vidHtml += '<video poster="/sites/all/themes/tcc/img/bk-video-still.jpg" id="bgvid" playsinline autoplay muted loop>';
-  //     $vidHtml += '<source src="/sites/all/themes/tcc/img/bk-video-trimmed_1.mp4" type="video/mp4">';
-  //     $vidHtml += '</video>';
-  //     $('#hero').css('background-image', 'none').prepend($vidHtml);
-  //   }
-  //
-    $('#dynamic-title').text('This title is set by javascript');
+  /**
+   * Basically this is on page load tasks
+   *
+   * @type {Drupal~behavior}
+   */
+  Drupal.behaviors.inetPageLinks = {
+    attach: function (context, settings) {
+      $('#dynamic-title').text('This title is set by javascript');
 
-  // google map
-  var map;
+      // ##########################################
+      // ######### Overlay Mobile Menu Logic ######
+      // ##########################################
+      $('.btn-toggle-overlay-menu').click(function (e) {
+        $('body').toggleClass('overlay-menu-active');
+      });
 
-  function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: {
-        lat: -34.397,
-        lng: 150.644
-      },
-      zoom: 8
-    });
-  }
+    }
+  };
 
-
-
-  // ##########################################
-  // ######### Overlay Mobile Menu Logic ######
-  // ##########################################
-  $('.btn-toggle-overlay-menu').click(function(e) {
-    $('body').toggleClass('overlay-menu-active');
-  });
-
-});
-})(jQuery);
+}(jQuery, Drupal, drupalSettings));
